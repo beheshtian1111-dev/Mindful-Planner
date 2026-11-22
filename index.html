@@ -1,348 +1,694 @@
 <!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+  </style>
+</head>
+<body>
+<!-- STITCH_THREEJS_START:ANIMATION_14 class="fixed inset-0 w-full h-full bg-transparent" -->
+<div class="fixed inset-0 w-full h-full bg-transparent" style="display:block;">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r125/three.min.js"></script>
+<div id="threejs-container-ANIMATION_14" style="width:100%;height:100%"></div>
+<script>
+(function() {
+  const container = document.getElementById('threejs-container-ANIMATION_14');
+  const devicePixelRatio = window.devicePixelRatio || 1;
+  # گاه‌نگار (Mindful Planner) — نسخه کامل و تعاملی (Interactive) برای گیت‌هاب
+
+این نسخه شامل **جاوااسکریپت کامل (Vanilla JS + LocalStorage)** است تا تمامی دکمه‌ها، تب‌ها، تایمر پومودورو، ردیاب آب، تیک زدن کارها، فیلترهای تقویم، تعریف عادت جدید و **مودال ورود با نام کاربر** به صورت واقعی و زنده کار کنند و اطلاعات در مرورگر ذخیره شوند.
+
+---
+
+## ۱. فایل `index.html` (داشبورد روزانه + مودال ورود + افزودن سریع)
+
+```html
+<!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>گاه‌نگار - داشبورد روزانه</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Vazirmatn', 'Plus Jakarta Sans', 'sans-serif'],
-          },
-          colors: {
-            brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              500: '#253366',
-              600: '#1d2752',
-              700: '#161d3d',
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <style>
-    body { font-family: 'Vazirmatn', sans-serif; }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Vazirmatn:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+    body { font-family: 'Vazirmatn', 'Plus Jakarta Sans', sans-serif; }
   </style>
-</head>
-<body class="bg-[#faf9f6] text-slate-800 antialiased min-h-screen pb-24 selection:bg-indigo-100 selection:text-indigo-900">
-  <!-- کانتینر اصلی موبایل -->
-  <div class="max-w-md mx-auto min-h-screen bg-[#faf9f6] flex flex-col relative shadow-sm">
-    
-    <!-- هدر بالای صفحه -->
-    <header class="flex items-center justify-between px-6 pt-6 pb-4 bg-[#faf9f6] sticky top-0 z-30">
-      <div class="flex items-center gap-3">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80" alt="سارا محبی" class="w-11 h-11 rounded-full object-cover border-2 border-white shadow-sm">
-        <div>
-          <h1 class="text-base font-bold text-slate-900 leading-tight">گاه‌نگار</h1>
-          <p class="text-[11px] font-medium text-slate-400">Today Dashboard</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-600 shadow-sm border border-slate-100 active:scale-95 transition-transform">
-          <span class="material-symbols-outlined text-xl">notifications</span>
-        </button>
-      </div>
-    </header>
 
-    <!-- محتوای اصلی -->
-    <main class="flex-1 px-5 space-y-5">
-      
-      <!-- نوار انتخاب روزهای هفته -->
-      <section class="flex justify-between items-center bg-white p-2.5 rounded-3xl shadow-sm border border-slate-100 overflow-x-auto gap-2">
-        <button class="flex flex-col items-center justify-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition">
-          <span class="text-[11px] font-medium">ش</span>
-          <span class="text-sm font-bold mt-1">۲۱</span>
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1"></span>
-        </button>
-        <button class="flex flex-col items-center justify-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition">
-          <span class="text-[11px] font-medium">ی</span>
-          <span class="text-sm font-bold mt-1">۲۲</span>
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1"></span>
-        </button>
-        <button class="flex flex-col items-center justify-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition">
-          <span class="text-[11px] font-medium">د</span>
-          <span class="text-sm font-bold mt-1">۲۳</span>
-          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1"></span>
-        </button>
-        <!-- روز انتخابی (امروز) -->
-        <button class="flex flex-col items-center justify-center py-2 px-3.5 rounded-2xl bg-[#253366] text-white shadow-md shadow-indigo-900/20 scale-105">
-          <span class="text-[10px] font-medium opacity-80">سه‌شنبه</span>
-          <span class="text-base font-extrabold mt-0.5">۲۴</span>
-          <div class="flex gap-1 mt-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-          </div>
-        </button>
-        <button class="flex flex-col items-center justify-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition">
-          <span class="text-[11px] font-medium">چ</span>
-          <span class="text-sm font-bold mt-1">۲۵</span>
-          <span class="w-1.5 h-1.5 rounded-full bg-slate-300 mt-1"></span>
-        </button>
-        <button class="flex flex-col items-center justify-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition">
-          <span class="text-[11px] font-medium">پ</span>
-          <span class="text-sm font-bold mt-1">۲۶</span>
-          <span class="w-1.5 h-1.5 rounded-full bg-slate-300 mt-1"></span>
-        </button>
-        <button class="flex flex-col items-center justify-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition">
-          <span class="text-[11px] font-medium">ج</span>
-          <span class="text-sm font-bold mt-1">۲۷</span>
-          <span class="w-1.5 h-1.5 rounded-full bg-transparent mt-1"></span>
-        </button>
-      </section>
-
-      <!-- کارت وضعیت پیشرفت و خوش‌آمدگویی -->
-      <section class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm relative overflow-hidden">
-        <div class="flex items-center justify-between">
-          <div class="space-y-1.5 max-w-[65%]">
-            <span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 border border-amber-200/50">
-              <span class="material-symbols-outlined text-sm">local_fire_department</span>
-              زنجیره ۷ روزه فعال
+<body class="bg-[#faf9f6] text-slate-800 antialiased min-h-screen pb-24">
+<div class="max-w-md mx-auto min-h-screen bg-[#faf9f6] flex flex-col relative shadow-sm">
+<!-- هدر -->
+<header class="flex items-center justify-between px-6 pt-6 pb-4 bg-[#faf9f6] sticky top-0 z-30">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-[#253366] text-white flex items-center justify-center font-extrabold text-lg shadow-sm" id="user-avatar">س</div>
+<div>
+<h1 class="text-base font-bold text-slate-900 leading-tight">گاه‌نگار</h1>
+<p class="text-[11px] font-medium text-slate-400" id="header-username">داشبورد هوشمند روزانه</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-600 shadow-sm border border-slate-100 active:scale-95 transition" onclick="openLoginModal()" title="تغییر نام کاربر">
+<span class="material-symbols-outlined text-xl">person</span>
+</button>
+</div>
+</header>
+<main class="flex-1 px-5 space-y-5">
+<!-- نوار انتخاب روزهای هفته -->
+<section class="flex justify-between items-center bg-white p-2.5 rounded-3xl shadow-sm border border-slate-100 overflow-x-auto gap-1" id="week-strip">
+<button class="day-btn flex flex-col items-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition" onclick="selectDay(this, 'شنبه ۲۱')">
+<span class="text-[11px]">ش</span><span class="text-sm font-bold mt-1">۲۱</span><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1"></span>
+</button>
+<button class="day-btn flex flex-col items-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition" onclick="selectDay(this, 'یکشنبه ۲۲')">
+<span class="text-[11px]">ی</span><span class="text-sm font-bold mt-1">۲۲</span><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1"></span>
+</button>
+<button class="day-btn flex flex-col items-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition" onclick="selectDay(this, 'دوشنبه ۲۳')">
+<span class="text-[11px]">د</span><span class="text-sm font-bold mt-1">۲۳</span><span class="w-1.5 h-1.5 rounded-full bg-amber-500 mt-1"></span>
+</button>
+<button class="day-btn active flex flex-col items-center py-2 px-3.5 rounded-2xl bg-[#253366] text-white shadow-md scale-105 transition" onclick="selectDay(this, 'سه‌شنبه ۲۴')">
+<span class="text-[10px] opacity-80">سه‌شنبه</span><span class="text-base font-extrabold mt-0.5">۲۴</span>
+<div class="flex gap-1 mt-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span></div>
+</button>
+<button class="day-btn flex flex-col items-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition" onclick="selectDay(this, 'چهارشنبه ۲۵')">
+<span class="text-[11px]">چ</span><span class="text-sm font-bold mt-1">۲۵</span><span class="w-1.5 h-1.5 rounded-full bg-slate-300 mt-1"></span>
+</button>
+<button class="day-btn flex flex-col items-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition" onclick="selectDay(this, 'پنج‌شنبه ۲۶')">
+<span class="text-[11px]">پ</span><span class="text-sm font-bold mt-1">۲۶</span><span class="w-1.5 h-1.5 rounded-full bg-slate-300 mt-1"></span>
+</button>
+<button class="day-btn flex flex-col items-center py-2 px-3 rounded-2xl text-slate-400 hover:text-slate-700 transition" onclick="selectDay(this, 'جمعه ۲۷')">
+<span class="text-[11px]">ج</span><span class="text-sm font-bold mt-1">۲۷</span><span class="w-1.5 h-1.5 rounded-full bg-transparent mt-1"></span>
+</button>
+</section>
+<!-- کارت وضعیت پیشرفت و خوش‌آمدگویی -->
+<section class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm flex items-center justify-between">
+<div class="space-y-1.5 max-w-[65%]">
+<span class="inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50 text-amber-600 border border-amber-200/50">
+<span class="material-symbols-outlined text-sm">local_fire_department</span> زنجیره ۷ روزه فعال
+        </span>
+<h2 class="text-lg font-extrabold text-slate-900 mt-2" id="greeting-text">سلام، مسیرت عالیه!</h2>
+<p class="text-xs text-slate-500 leading-relaxed" id="progress-summary">در حال محاسبه...</p>
+</div>
+<div class="relative w-20 h-20 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90" viewbox="0 0 36 36">
+<path class="text-slate-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3.5"></path>
+<path class="text-emerald-500 transition-all duration-500" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" id="progress-ring" stroke="currentColor" stroke-dasharray="0, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<div class="absolute flex flex-col items-center">
+<span class="text-base font-extrabold text-slate-800" id="progress-percent">۰٪</span>
+<span class="text-[9px] text-slate-400 font-medium">تکمیل</span>
+</div>
+</div>
+</section>
+<!-- اولویت‌های طلایی امروز -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-amber-500 text-lg">stars</span>
+<h3 class="text-sm font-extrabold text-slate-900">اولویت‌های طلایی امروز</h3>
+</div>
+<span class="text-xs text-slate-400 font-medium" id="tasks-count">۳ هدف</span>
+</div>
+<div class="space-y-2.5" id="tasks-list"></div>
+</section>
+<!-- ویجت‌های پومودورو و آب -->
+<section class="grid grid-cols-2 gap-3">
+<!-- پومودورو -->
+<div class="bg-[#253366] text-white p-4 rounded-3xl shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-medium text-indigo-200 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-amber-400">timer</span> تمرکز عمیق
             </span>
-            <h2 class="text-lg font-extrabold text-slate-900 mt-2">صبح بخیر سارا، مسیرت عالیه!</h2>
-            <p class="text-xs text-slate-500 leading-relaxed">۵ از ۷ فعالیت کلیدی امروز را با موفقیت تمام کرده‌ای.</p>
+<button class="text-[9px] bg-white/10 hover:bg-white/20 px-1.5 py-0.5 rounded text-white" onclick="resetPomodoro()">ریست</button>
+</div>
+<div class="text-center py-2">
+<span class="text-2xl font-black tracking-wider" id="pomodoro-display">25:00</span>
+<p class="text-[10px] text-indigo-200 mt-0.5" id="pomodoro-status">آماده شروع</p>
+</div>
+</div>
+<button class="w-full py-2 bg-white text-[#253366] text-xs font-bold rounded-xl flex items-center justify-center gap-1 active:scale-95 transition" id="pomodoro-btn" onclick="togglePomodoro()">
+<span class="material-symbols-outlined text-sm" id="pomodoro-icon">play_arrow</span>
+<span id="pomodoro-btn-text">شروع تمرکز</span>
+</button>
+</div>
+<!-- ردیاب آب -->
+<div class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="text-[10px] font-bold text-slate-700 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs text-sky-500">water_drop</span> نوشیدن آب
+            </span>
+<span class="text-[10px] font-semibold text-slate-400" id="water-count">۰ از ۸ لیوان</span>
+</div>
+<div class="flex flex-wrap gap-1.5 py-2 justify-center" id="water-glasses"></div>
+</div>
+<button class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-1 active:scale-95 transition" onclick="addWater()">
+<span class="material-symbols-outlined text-sm">add</span> ثبت یک لیوان
+        </button>
+</div>
+</section>
+</main>
+<!-- نوار ناوبری پایین -->
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-2 flex items-center justify-between z-40">
+<a class="flex flex-col items-center gap-1 text-[#253366]" href="index.html">
+<span class="material-symbols-outlined text-2xl font-bold">wb_sunny</span>
+<span class="text-[10px] font-extrabold">امروز</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition" href="calendar.html">
+<span class="material-symbols-outlined text-2xl">calendar_month</span>
+<span class="text-[10px] font-medium">تقویم</span>
+</a>
+<button class="w-12 h-12 -mt-5 rounded-full bg-[#253366] text-white flex items-center justify-center shadow-lg shadow-indigo-900/30 active:scale-95 transition" onclick="openAddTaskModal()">
+<span class="material-symbols-outlined text-2xl">add</span>
+</button>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition" href="habits.html">
+<span class="material-symbols-outlined text-2xl">task_alt</span>
+<span class="text-[10px] font-medium">عادت‌ها</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition" href="analytics.html">
+<span class="material-symbols-outlined text-2xl">show_chart</span>
+<span class="text-[10px] font-medium">آمار</span>
+</a>
+</nav>
+</div>
+<!-- مودال ورود و دریافت نام کاربر -->
+<div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-5" id="login-modal">
+<div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-xl space-y-4">
+<div class="w-12 h-12 rounded-2xl bg-[#253366] text-white flex items-center justify-center mx-auto">
+<span class="material-symbols-outlined text-2xl">waving_hand</span>
+</div>
+<div class="text-center">
+<h3 class="text-lg font-extrabold text-slate-900">به گاه‌نگار خوش آمدید!</h3>
+<p class="text-xs text-slate-500 mt-1">برای شخصی‌سازی برنامه روزانه، نام خود را وارد کنید:</p>
+</div>
+<input class="w-full px-4 py-3 rounded-2xl border border-slate-200 text-sm focus:outline-none focus:border-[#253366] text-center font-bold" id="username-input" placeholder="مثلاً: سارا" type="text"/>
+<button class="w-full py-3 rounded-2xl bg-[#253366] text-white text-sm font-bold shadow-md active:scale-95 transition" onclick="saveUsername()">ورود به برنامه</button>
+</div>
+</div>
+<!-- مودال افزودن کار جدید -->
+<div class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 hidden items-center justify-center p-5" id="add-task-modal">
+<div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-xl space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-base font-extrabold text-slate-900">افزودن اولویت جدید</h3>
+<button class="text-slate-400 hover:text-slate-600" onclick="closeAddTaskModal()"><span class="material-symbols-outlined">close</span></button>
+</div>
+<input class="w-full px-4 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#253366]" id="new-task-title" placeholder="عنوان فعالیت..." type="text"/>
+<div class="grid grid-cols-2 gap-2">
+<input class="px-3 py-2.5 rounded-xl border border-slate-200 text-xs focus:outline-none focus:border-[#253366]" id="new-task-time" placeholder="ساعت (مثلاً ۱۴:۰۰)" type="text"/>
+<select class="px-3 py-2.5 rounded-xl border border-slate-200 text-xs bg-white focus:outline-none focus:border-[#253366]" id="new-task-tag">
+<option value="کاری">کاری</option>
+<option value="فوری">فوری</option>
+<option value="سلامت">سلامت</option>
+<option value="شخصی">شخصی</option>
+</select>
+</div>
+<button class="w-full py-3 rounded-2xl bg-[#253366] text-white text-xs font-bold shadow-md active:scale-95 transition" onclick="addNewTask()">ثبت فعالیت</button>
+</div>
+</div>
+<script>
+  const defaultTasks = [
+    { id: 1, title: 'نهایی کردن پروپوزال بازطراحی دیزاین سیستم', time: '۰۹:۰۰', tag: 'کاری', done: true },
+    { id: 2, title: 'جلسه بازخورد تیم محصول و تست تجربه کاربری', time: '۱۰:۰۰ الی ۱۱:۳۰', tag: 'فوری', done: false },
+    { id: 3, title: '۴۵ دقیقه تمرین تنفسی و ورزش هوازی', time: '۱۸:۳۰', tag: 'سلامت', done: false }
+  ];
+
+  let tasks = JSON.parse(localStorage.getItem('gahnegar_tasks')) || defaultTasks;
+  let waterCount = parseInt(localStorage.getItem('gahnegar_water')) || 6;
+  let username = localStorage.getItem('gahnegar_username') || '';
+
+  function checkLogin() {
+    if (!username) {
+      openLoginModal();
+    } else {
+      updateUserUI();
+    }
+  }
+  function openLoginModal() {
+    document.getElementById('username-input').value = username;
+    document.getElementById('login-modal').classList.remove('hidden');
+    document.getElementById('login-modal').classList.add('flex');
+  }
+  function saveUsername() {
+    const val = document.getElementById('username-input').value.trim();
+    if (!val) return;
+    username = val;
+    localStorage.setItem('gahnegar_username', username);
+    document.getElementById('login-modal').classList.add('hidden');
+    document.getElementById('login-modal').classList.remove('flex');
+    updateUserUI();
+  }
+  function updateUserUI() {
+    document.getElementById('greeting-text').innerText = `سلام ${username}، مسیرت عالیه!`;
+    document.getElementById('header-username').innerText = `خوش آمدی، ${username}`;
+    document.getElementById('user-avatar').innerText = username.charAt(0);
+  }
+
+  function renderTasks() {
+    const list = document.getElementById('tasks-list');
+    list.innerHTML = '';
+    tasks.forEach(t => {
+      const tagColors = {
+        'کاری': 'bg-purple-50 text-purple-600',
+        'فوری': 'bg-rose-50 text-rose-600',
+        'سلامت': 'bg-emerald-50 text-emerald-600',
+        'شخصی': 'bg-indigo-50 text-indigo-600'
+      };
+      list.innerHTML += `
+        <div onclick="toggleTask(${t.id})" class="cursor-pointer bg-white p-4 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm transition ${t.done ? 'opacity-75' : ''}">
+          <div class="flex items-center gap-3">
+            <button class="w-6 h-6 rounded-full flex items-center justify-center transition ${t.done ? 'bg-emerald-500 text-white' : 'border-2 border-slate-300'}">
+              ${t.done ? '<span class="material-symbols-outlined text-sm font-bold">check</span>' : ''}
+            </button>
+            <div>
+              <p class="text-xs font-bold ${t.done ? 'text-slate-500 line-through' : 'text-slate-800'}">${t.title}</p>
+              <span class="text-[10px] ${t.done ? 'text-emerald-600' : 'text-slate-400'} font-medium">${t.done ? 'انجام شد • ' : ''}${t.time}</span>
+            </div>
           </div>
-          <!-- دایره پیشرفت -->
-          <div class="relative w-20 h-20 flex items-center justify-center">
-            <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
-              <path class="text-slate-100" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-              <path class="text-emerald-500 stroke-round transition-all duration-1000" stroke-dasharray="70, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            </svg>
-            <div class="absolute flex flex-col items-center">
-              <span class="text-base font-extrabold text-slate-800">۷۰٪</span>
-              <span class="text-[9px] text-slate-400 font-medium">تکمیل</span>
+          <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${tagColors[t.tag] || 'bg-slate-100 text-slate-600'}">${t.tag}</span>
+        </div>
+      `;
+    });
+
+    const doneCount = tasks.filter(t => t.done).length;
+    const percent = tasks.length ? Math.round((doneCount / tasks.length) * 100) : 0;
+    document.getElementById('progress-percent').innerText = `${percent}٪`;
+    document.getElementById('progress-ring').setAttribute('stroke-dasharray', `${percent}, 100`);
+    document.getElementById('progress-summary').innerText = `${doneCount} از ${tasks.length} فعالیت کلیدی امروز را با موفقیت تمام کرده‌ای.`;
+    document.getElementById('tasks-count').innerText = `${tasks.length} هدف`;
+  }
+
+  function toggleTask(id) {
+    tasks = tasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+    localStorage.setItem('gahnegar_tasks', JSON.stringify(tasks));
+    renderTasks();
+  }
+
+  function openAddTaskModal() {
+    document.getElementById('add-task-modal').classList.remove('hidden');
+    document.getElementById('add-task-modal').classList.add('flex');
+  }
+  function closeAddTaskModal() {
+    document.getElementById('add-task-modal').classList.add('hidden');
+    document.getElementById('add-task-modal').classList.remove('flex');
+  }
+  function addNewTask() {
+    const title = document.getElementById('new-task-title').value.trim();
+    const time = document.getElementById('new-task-time').value.trim() || 'امروز';
+    const tag = document.getElementById('new-task-tag').value;
+    if (!title) return;
+    tasks.push({ id: Date.now(), title, time, tag, done: false });
+    localStorage.setItem('gahnegar_tasks', JSON.stringify(tasks));
+    document.getElementById('new-task-title').value = '';
+    closeAddTaskModal();
+    renderTasks();
+  }
+
+  function selectDay(el, label) {
+    document.querySelectorAll('.day-btn').forEach(btn => {
+      btn.classList.remove('bg-[#253366]', 'text-white', 'shadow-md', 'scale-105');
+      btn.classList.add('text-slate-400');
+    });
+    el.classList.remove('text-slate-400');
+    el.classList.add('bg-[#253366]', 'text-white', 'shadow-md', 'scale-105');
+  }
+
+  function renderWater() {
+    const container = document.getElementById('water-glasses');
+    container.innerHTML = '';
+    for (let i = 0; i < 8; i++) {
+      container.innerHTML += `<span class="w-3.5 h-6 rounded-full transition ${i < waterCount ? 'bg-[#253366]' : 'bg-slate-200'}"></span>`;
+    }
+    document.getElementById('water-count').innerText = `${waterCount} از ۸ لیوان`;
+  }
+  function addWater() {
+    waterCount = waterCount >= 8 ? 0 : waterCount + 1;
+    localStorage.setItem('gahnegar_water', waterCount);
+    renderWater();
+  }
+
+  let pomoSeconds = 25 * 60;
+  let pomoInterval = null;
+  function updatePomoDisplay() {
+    const m = String(Math.floor(pomoSeconds / 60)).padStart(2, '0');
+    const s = String(pomoSeconds % 60).padStart(2, '0');
+    document.getElementById('pomodoro-display').innerText = `${m}:${s}`;
+  }
+  function togglePomodoro() {
+    if (pomoInterval) {
+      clearInterval(pomoInterval);
+      pomoInterval = null;
+      document.getElementById('pomodoro-btn-text').innerText = 'ادامه تمرکز';
+      document.getElementById('pomodoro-icon').innerText = 'play_arrow';
+      document.getElementById('pomodoro-status').innerText = 'متوقف شده';
+    } else {
+      document.getElementById('pomodoro-btn-text').innerText = 'مکث پومودورو';
+      document.getElementById('pomodoro-icon').innerText = 'pause';
+      document.getElementById('pomodoro-status').innerText = 'در حال تمرکز...';
+      pomoInterval = setInterval(() => {
+        if (pomoSeconds > 0) {
+          pomoSeconds--;
+          updatePomoDisplay();
+        } else {
+          clearInterval(pomoInterval);
+          pomoInterval = null;
+          alert('زمان تمرکز ۲۵ دقیقه‌ای به پایان رسید!');
+          resetPomodoro();
+        }
+      }, 1000);
+    }
+  }
+  function resetPomodoro() {
+    clearInterval(pomoInterval);
+    pomoInterval = null;
+    pomoSeconds = 25 * 60;
+    updatePomoDisplay();
+    document.getElementById('pomodoro-btn-text').innerText = 'شروع تمرکز';
+    document.getElementById('pomodoro-icon').innerText = 'play_arrow';
+    document.getElementById('pomodoro-status').innerText = 'آماده شروع';
+  }
+
+  checkLogin();
+  renderTasks();
+  renderWater();
+</script>
+</body>
+
+```
+
+---
+
+## ۲. فایل `calendar.html` (تقویم تعاملی با فیلتر دسته‌بندی و سوییچ نما)
+
+```html
+<!DOCTYPE html>
+
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>گاه‌نگار - تقویم و زمان‌بندی</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>body { font-family: 'Vazirmatn', sans-serif; }</style>
+</link></head>
+<body class="bg-[#faf9f6] text-slate-800 antialiased min-h-screen pb-24">
+<div class="max-w-md mx-auto min-h-screen bg-[#faf9f6] flex flex-col relative shadow-sm">
+<header class="flex items-center justify-between px-6 pt-6 pb-4 bg-[#faf9f6] sticky top-0 z-30">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-[#253366] text-white flex items-center justify-center font-extrabold text-lg" id="cal-avatar">گ</div>
+<div>
+<h1 class="text-base font-bold text-slate-900">گاه‌نگار</h1>
+<p class="text-[11px] font-medium text-slate-400">تقویم و زمان‌بندی</p>
+</div>
+</div>
+</header>
+<main class="flex-1 px-5 space-y-4">
+<div class="flex items-center justify-between pt-1">
+<div>
+<h2 class="text-xl font-extrabold text-slate-900">اردیبهشت ۱۴۰۳</h2>
+<p class="text-xs text-slate-400 mt-0.5" id="view-subtitle">نمای هفتگی • ۴ رویداد</p>
+</div>
+</div>
+<!-- تب‌های تغییر نما -->
+<div class="flex bg-slate-200/70 p-1 rounded-2xl text-xs font-semibold">
+<button class="view-tab flex-1 py-2 rounded-xl text-slate-600 transition" onclick="switchView(this, 'نمای روزانه')">روزانه</button>
+<button class="view-tab flex-1 py-2 rounded-xl bg-[#253366] text-white shadow-sm transition" onclick="switchView(this, 'نمای هفتگی')">هفتگی</button>
+<button class="view-tab flex-1 py-2 rounded-xl text-slate-600 transition" onclick="switchView(this, 'نمای ماهانه')">ماهانه</button>
+</div>
+<!-- فیلتر دسته‌بندی -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+<button class="filter-btn px-3.5 py-1.5 rounded-full bg-[#253366] text-white font-medium whitespace-nowrap" onclick="filterEvents('all', this)">همه برنامه‌ها</button>
+<button class="filter-btn px-3.5 py-1.5 rounded-full bg-indigo-50 text-indigo-700 font-medium whitespace-nowrap" onclick="filterEvents('کاری', this)">کاری</button>
+<button class="filter-btn px-3.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 font-medium whitespace-nowrap" onclick="filterEvents('سلامت', this)">سلامت</button>
+<button class="filter-btn px-3.5 py-1.5 rounded-full bg-amber-50 text-amber-700 font-medium whitespace-nowrap" onclick="filterEvents('یادگیری', this)">یادگیری</button>
+</div>
+<!-- لیست رویدادها -->
+<section class="space-y-3 pt-2" id="events-container"></section>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-2 flex items-center justify-between z-40">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="index.html"><span class="material-symbols-outlined text-2xl">wb_sunny</span><span class="text-[10px]">امروز</span></a>
+<a class="flex flex-col items-center gap-1 text-[#253366]" href="calendar.html"><span class="material-symbols-outlined text-2xl font-bold">calendar_month</span><span class="text-[10px] font-extrabold">تقویم</span></a>
+<a class="w-12 h-12 -mt-5 rounded-full bg-[#253366] text-white flex items-center justify-center shadow-lg" href="index.html"><span class="material-symbols-outlined text-2xl">add</span></a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="habits.html"><span class="material-symbols-outlined text-2xl">task_alt</span><span class="text-[10px]">عادت‌ها</span></a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="analytics.html"><span class="material-symbols-outlined text-2xl">show_chart</span><span class="text-[10px]">آمار</span></a>
+</nav>
+</div>
+<script>
+  const uname = localStorage.getItem('gahnegar_username');
+  if (uname) document.getElementById('cal-avatar').innerText = uname.charAt(0);
+
+  const events = [
+    { title: 'پیاده‌روی صبحگاهی و پادکست', desc: 'بوستان لاله • ۴۵ دقیقه', time: '۰۸:۳۰', cat: 'سلامت', color: 'emerald' },
+    { title: 'جلسه هفتگی اسپرینت تیم', desc: 'بررسی تسک‌های اسپرینت ۴۲', time: '۱۰:۰۰', cat: 'کاری', color: 'indigo' },
+    { title: 'بررسی ایمیل‌ها و مستندات پروژه', desc: 'پاسخ‌گویی به مشتریان', time: '۱۲:۳۰', cat: 'کاری', color: 'indigo' },
+    { title: 'مطالعه کتاب عادات اتمی', desc: 'فصل ۴ • ۳۰ دقیقه تمرکز', time: '۱۶:۰۰', cat: 'یادگیری', color: 'amber' }
+  ];
+
+  function renderEvents(filter = 'all') {
+    const container = document.getElementById('events-container');
+    container.innerHTML = '';
+    const filtered = filter === 'all' ? events : events.filter(e => e.cat === filter);
+    filtered.forEach(e => {
+      container.innerHTML += `
+        <div class="bg-white p-4 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm relative overflow-hidden">
+          <div class="absolute right-0 top-0 bottom-0 w-1.5 bg-${e.color}-500"></div>
+          <div class="pr-2">
+            <h4 class="text-xs font-bold text-slate-800">${e.title}</h4>
+            <p class="text-[10px] text-slate-400 mt-0.5">${e.desc}</p>
+            <span class="inline-block mt-2 text-[9px] px-2 py-0.5 rounded-md bg-${e.color}-50 text-${e.color}-600 font-semibold">${e.cat}</span>
+          </div>
+          <span class="text-sm font-extrabold text-slate-800">${e.time}</span>
+        </div>
+      `;
+    });
+  }
+
+  function filterEvents(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.remove('bg-[#253366]', 'text-white');
+    });
+    btn.classList.add('bg-[#253366]', 'text-white');
+    renderEvents(cat);
+  }
+
+  function switchView(btn, label) {
+    document.querySelectorAll('.view-tab').forEach(b => {
+      b.classList.remove('bg-[#253366]', 'text-white', 'shadow-sm');
+      b.classList.add('text-slate-600');
+    });
+    btn.classList.add('bg-[#253366]', 'text-white', 'shadow-sm');
+    btn.classList.remove('text-slate-600');
+    document.getElementById('view-subtitle').innerText = `${label} • ۴ رویداد`;
+  }
+
+  renderEvents();
+</script>
+</body>
+</html>
+```
+
+---
+
+## ۳. فایل `habits.html` (ردیاب عادات تعاملی + افزودن عادت جدید)
+
+```html
+<!DOCTYPE html>
+
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>گاه‌نگار - ردیاب عادات</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>body { font-family: 'Vazirmatn', sans-serif; }</style>
+</link></head>
+<body class="bg-[#faf9f6] text-slate-800 antialiased min-h-screen pb-24">
+<div class="max-w-md mx-auto min-h-screen bg-[#faf9f6] flex flex-col relative shadow-sm">
+<header class="flex items-center justify-between px-6 pt-6 pb-4 bg-[#faf9f6] sticky top-0 z-30">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-[#253366] text-white flex items-center justify-center font-extrabold text-lg" id="hab-avatar">گ</div>
+<div>
+<h1 class="text-base font-bold text-slate-900">گاه‌نگار</h1>
+<p class="text-[11px] font-medium text-slate-400">ردیاب عادات</p>
+</div>
+</div>
+</header>
+<main class="flex-1 px-5 space-y-4">
+<section class="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm">
+<div class="flex items-center justify-between">
+<div>
+<span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-600">رکورد طلایی</span>
+<h2 class="text-xl font-black text-slate-900 pt-2">۱۲ روز مداومت مداوم!</h2>
+</div>
+<div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-400 flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-2xl">local_fire_department</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+<span class="text-slate-500">پیشرفت امروز</span>
+<span class="font-extrabold text-slate-800" id="habit-progress-text">۰ از ۰</span>
+</div>
+<div class="w-full h-2 bg-slate-100 rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-emerald-500 rounded-full transition-all duration-500" id="habit-progress-bar" style="width: 0%"></div>
+</div>
+</section>
+<section class="space-y-2.5" id="habits-list"></section>
+<button class="w-full py-3.5 rounded-2xl bg-[#253366] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md active:scale-95 transition" onclick="addHabitPrompt()">
+<span class="material-symbols-outlined text-base">add_circle</span> تعریف عادت یا روتین جدید
+    </button>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-2 flex items-center justify-between z-40">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="index.html"><span class="material-symbols-outlined text-2xl">wb_sunny</span><span class="text-[10px]">امروز</span></a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="calendar.html"><span class="material-symbols-outlined text-2xl">calendar_month</span><span class="text-[10px]">تقویم</span></a>
+<a class="w-12 h-12 -mt-5 rounded-full bg-[#253366] text-white flex items-center justify-center shadow-lg" href="index.html"><span class="material-symbols-outlined text-2xl">add</span></a>
+<a class="flex flex-col items-center gap-1 text-[#253366]" href="habits.html"><span class="material-symbols-outlined text-2xl font-bold">task_alt</span><span class="text-[10px] font-extrabold">عادت‌ها</span></a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="analytics.html"><span class="material-symbols-outlined text-2xl">show_chart</span><span class="text-[10px]">آمار</span></a>
+</nav>
+</div>
+<script>
+  const uname = localStorage.getItem('gahnegar_username');
+  if (uname) document.getElementById('hab-avatar').innerText = uname.charAt(0);
+
+  let habits = JSON.parse(localStorage.getItem('gahnegar_habits')) || [
+    { id: 1, title: 'مدیتیشن و تنفس عمیق', sub: '۱۰ دقیقه • ۱۴ روز', done: true },
+    { id: 2, title: 'نوشیدن دو لیوان آب ولرم', sub: '۵۰۰ میلی‌لیتر • اول صبح', done: true },
+    { id: 3, title: 'مطالعه کتاب قبل خواب', sub: 'حداقل ۱۵ صفحه', done: false }
+  ];
+
+  function renderHabits() {
+    const list = document.getElementById('habits-list');
+    list.innerHTML = '';
+    habits.forEach(h => {
+      list.innerHTML += `
+        <div onclick="toggleHabit(${h.id})" class="cursor-pointer bg-white p-3.5 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm">
+          <div class="flex items-center gap-3">
+            <button class="w-6 h-6 rounded-full flex items-center justify-center ${h.done ? 'bg-emerald-500 text-white' : 'border-2 border-slate-300'}">
+              ${h.done ? '<span class="material-symbols-outlined text-sm">check</span>' : ''}
+            </button>
+            <div>
+              <p class="text-xs font-bold ${h.done ? 'text-slate-500 line-through' : 'text-slate-800'}">${h.title}</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">${h.sub}</p>
             </div>
           </div>
         </div>
-      </section>
+      `;
+    });
+    const done = habits.filter(h => h.done).length;
+    const pct = habits.length ? Math.round((done / habits.length) * 100) : 0;
+    document.getElementById('habit-progress-text').innerText = `${done} از ${habits.length} مورد`;
+    document.getElementById('habit-progress-bar').style.width = `${pct}%`;
+  }
 
-      <!-- اولویت‌های طلایی امروز (Top Focus) -->
-      <section class="space-y-3">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-amber-500 text-lg">stars</span>
-            <h3 class="text-sm font-extrabold text-slate-900">اولویت‌های طلایی امروز</h3>
-          </div>
-          <span class="text-xs text-slate-400 font-medium">۳ هدف اصلی</span>
-        </div>
+  function toggleHabit(id) {
+    habits = habits.map(h => h.id === id ? { ...h, done: !h.done } : h);
+    localStorage.setItem('gahnegar_habits', JSON.stringify(habits));
+    renderHabits();
+  }
 
-        <div class="space-y-2.5">
-          <!-- آیتم اول (انجام شده) -->
-          <div class="bg-white p-4 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm opacity-80">
-            <div class="flex items-center gap-3">
-              <button class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center">
-                <span class="material-symbols-outlined text-sm font-bold">check</span>
-              </button>
-              <div>
-                <p class="text-xs font-bold text-slate-500 line-through">نهایی کردن پروپوزال بازطراحی دیزاین سیستم</p>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="text-[10px] text-emerald-600 flex items-center gap-0.5 font-medium">
-                    <span class="material-symbols-outlined text-xs">check_circle</span>
-                    انجام شد
-                  </span>
-                  <span class="text-[10px] text-slate-400 font-medium">۰۹:۰۰</span>
-                </div>
-              </div>
-            </div>
-            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-50 text-purple-600">کاری</span>
-          </div>
+  function addHabitPrompt() {
+    const title = prompt('عنوان عادت جدید را وارد کنید:');
+    if (!title || !title.trim()) return;
+    habits.push({ id: Date.now(), title: title.trim(), sub: 'روتین روزانه', done: false });
+    localStorage.setItem('gahnegar_habits', JSON.stringify(habits));
+    renderHabits();
+  }
 
-          <!-- آیتم دوم (در انتظار) -->
-          <div class="bg-white p-4 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm">
-            <div class="flex items-center gap-3">
-              <button class="w-6 h-6 rounded-full border-2 border-slate-300 hover:border-indigo-600 transition"></button>
-              <div>
-                <p class="text-xs font-bold text-slate-800">جلسه بازخورد تیم محصول و تست تجربه کاربری</p>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="text-[10px] text-indigo-600 flex items-center gap-1 font-medium">
-                    <span class="material-symbols-outlined text-xs">videocam</span>
-                    ۱۰:۰۰ الی ۱۱:۳۰ (گوگل میت)
-                  </span>
-                </div>
-              </div>
-            </div>
-            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600">فوری</span>
-          </div>
+  renderHabits();
+</script>
+</body>
+</html>
+```
 
-          <!-- آیتم سوم -->
-          <div class="bg-white p-4 rounded-2xl border border-slate-100 flex items-center justify-between shadow-sm">
-            <div class="flex items-center gap-3">
-              <button class="w-6 h-6 rounded-full border-2 border-slate-300 hover:border-indigo-600 transition"></button>
-              <div>
-                <p class="text-xs font-bold text-slate-800">۴۵ دقیقه تمرین تنفسی و ورزش هوازی</p>
-                <div class="flex items-center gap-2 mt-1">
-                  <span class="text-[10px] text-slate-400 flex items-center gap-1 font-medium">
-                    <span class="material-symbols-outlined text-xs">fitness_center</span>
-                    ۱۸:۳۰ • باشگاه یا پارک لاله
-                  </span>
-                </div>
-              </div>
-            </div>
-            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600">سلامت</span>
-          </div>
-        </div>
-      </section>
+---
 
-      <!-- ویجت‌های دو ستونه: پومودورو و ردیاب آب -->
-      <section class="grid grid-cols-2 gap-3">
-        <!-- ویجت تمرکز پومودورو -->
-        <div class="bg-[#253366] text-white p-4 rounded-3xl shadow-sm flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-[10px] font-medium text-indigo-200 flex items-center gap-1">
-                <span class="material-symbols-outlined text-xs text-amber-400">timer</span>
-                تمرکز عمیق
-              </span>
-              <span class="text-[9px] bg-white/10 px-1.5 py-0.5 rounded text-white font-medium">۲۵ دقیقه</span>
-            </div>
-            <div class="text-center py-2">
-              <span class="text-2xl font-black tracking-wider">۲۱:۴۵</span>
-              <p class="text-[10px] text-indigo-200 mt-0.5">باقیمانده</p>
-            </div>
-          </div>
-          <button class="w-full py-2 bg-white text-[#253366] text-xs font-bold rounded-xl flex items-center justify-center gap-1 shadow-sm active:scale-95 transition">
-            <span class="material-symbols-outlined text-sm">pause</span>
-            مکث پومودورو
-          </button>
-        </div>
+## ۴. فایل `analytics.html` (آمار تعاملی با تغییر بازه زمانی)
 
-        <!-- ویجت آب -->
-        <div class="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between mb-2">
-              <span class="text-[10px] font-bold text-slate-700 flex items-center gap-1">
-                <span class="material-symbols-outlined text-xs text-sky-500">water_drop</span>
-                نوشیدن آب
-              </span>
-              <span class="text-[10px] font-semibold text-slate-400">۶ از ۸ لیوان</span>
-            </div>
-            <div class="flex flex-wrap gap-1.5 py-2 justify-center">
-              <span class="w-3.5 h-6 rounded-full bg-[#253366]"></span>
-              <span class="w-3.5 h-6 rounded-full bg-[#253366]"></span>
-              <span class="w-3.5 h-6 rounded-full bg-[#253366]"></span>
-              <span class="w-3.5 h-6 rounded-full bg-[#253366]"></span>
-              <span class="w-3.5 h-6 rounded-full bg-[#253366]"></span>
-              <span class="w-3.5 h-6 rounded-full bg-[#253366]"></span>
-              <span class="w-3.5 h-6 rounded-full bg-slate-200"></span>
-              <span class="w-3.5 h-6 rounded-full bg-slate-200"></span>
-            </div>
-          </div>
-          <button class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center justify-center gap-1 active:scale-95 transition">
-            <span class="material-symbols-outlined text-sm">add</span>
-            ثبت یک لیوان
-          </button>
-        </div>
-      </section>
+```html
+<!DOCTYPE html>
 
-      <!-- خط زمانی کارهای باقیمانده روز -->
-      <section class="space-y-3 pb-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-indigo-600 text-lg">calendar_today</span>
-            <h3 class="text-sm font-extrabold text-slate-900">برنامه زمانی ادامه‌ی روز</h3>
-          </div>
-          <a href="calendar.html" class="text-xs text-indigo-600 font-semibold hover:underline">نمای تقویم کامل</a>
-        </div>
+<html dir="rtl" lang="fa">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>گاه‌نگار - آمار و تحلیل</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>body { font-family: 'Vazirmatn', sans-serif; }</style>
+</link></head>
+<body class="bg-[#faf9f6] text-slate-800 antialiased min-h-screen pb-24">
+<div class="max-w-md mx-auto min-h-screen bg-[#faf9f6] flex flex-col relative shadow-sm">
+<header class="flex items-center justify-between px-6 pt-6 pb-4 bg-[#faf9f6] sticky top-0 z-30">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-full bg-[#253366] text-white flex items-center justify-center font-extrabold text-lg" id="ana-avatar">گ</div>
+<div>
+<h1 class="text-base font-bold text-slate-900">گاه‌نگار</h1>
+<p class="text-[11px] font-medium text-slate-400">آمار و تحلیل</p>
+</div>
+</div>
+</header>
+<main class="flex-1 px-5 space-y-4">
+<h2 class="text-2xl font-black text-slate-900">نبض عملکرد شما</h2>
+<div class="flex bg-slate-200/70 p-1 rounded-2xl text-xs font-semibold">
+<button class="range-btn flex-1 py-2 rounded-xl bg-white text-slate-900 shadow-sm" onclick="setRange(this, 86, '۲۹ از ۳۴ مورد', '۹۲٪')">این هفته</button>
+<button class="range-btn flex-1 py-2 rounded-xl text-slate-600" onclick="setRange(this, 89, '۱۱۸ از ۱۳۰ مورد', '۹۴٪')">این ماه</button>
+<button class="range-btn flex-1 py-2 rounded-xl text-slate-600" onclick="setRange(this, 91, '۳۴۰ از ۳۷۰ مورد', '۹۵٪')">۳ ماهه</button>
+</div>
+<section class="bg-[#253366] text-white rounded-3xl p-5 shadow-sm">
+<span class="text-xs text-indigo-200">شاخص تعادل و بهره‌وری</span>
+<div class="flex items-baseline gap-1 mt-2">
+<span class="text-4xl font-black" id="score-val">86</span>
+<span class="text-lg text-indigo-200">/ ۱۰۰</span>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-4 pt-3 border-t border-white/10 text-xs">
+<div><span class="text-indigo-200 text-[10px]">تسک‌های تکمیل شده</span><p class="font-extrabold text-sm mt-0.5" id="tasks-stat">۲۹ از ۳۴ مورد</p></div>
+<div class="text-left"><span class="text-indigo-200 text-[10px]">وفاداری به عادات</span><p class="font-extrabold text-sm mt-0.5" id="habits-stat">۹۲٪</p></div>
+</div>
+</section>
+</main>
+<nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-2 flex items-center justify-between z-40">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="index.html"><span class="material-symbols-outlined text-2xl">wb_sunny</span><span class="text-[10px]">امروز</span></a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="calendar.html"><span class="material-symbols-outlined text-2xl">calendar_month</span><span class="text-[10px]">تقویم</span></a>
+<a class="w-12 h-12 -mt-5 rounded-full bg-[#253366] text-white flex items-center justify-center shadow-lg" href="index.html"><span class="material-symbols-outlined text-2xl">add</span></a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="habits.html"><span class="material-symbols-outlined text-2xl">task_alt</span><span class="text-[10px]">عادت‌ها</span></a>
+<a class="flex flex-col items-center gap-1 text-[#253366]" href="analytics.html"><span class="material-symbols-outlined text-2xl font-bold">show_chart</span><span class="text-[10px] font-extrabold">آمار</span></a>
+</nav>
+</div>
+<script>
+  const uname = localStorage.getItem('gahnegar_username');
+  if (uname) document.getElementById('ana-avatar').innerText = uname.charAt(0);
 
-        <div class="space-y-2.5">
-          <!-- رویداد ۱ -->
-          <div class="bg-white p-3.5 rounded-2xl border-r-4 border-r-amber-500 border border-slate-100 flex items-center justify-between shadow-sm">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">
-                <span class="material-symbols-outlined">groups</span>
-              </div>
-              <div>
-                <h4 class="text-xs font-bold text-slate-800">جلسه آنلاین با تیم فنی و مارکتینگ</h4>
-                <p class="text-[10px] text-slate-400 mt-0.5">بررسی پروتوتایپ جریان خرید و رفع گلوگاه‌ها</p>
-              </div>
-            </div>
-            <div class="text-left">
-              <span class="text-xs font-black text-amber-600">۱۰:۰۰</span>
-              <p class="text-[9px] text-slate-400">۱۱:۳۰</p>
-            </div>
-          </div>
+  function setRange(btn, score, tStat, hStat) {
+    document.querySelectorAll('.range-btn').forEach(b => {
+      b.classList.remove('bg-white', 'text-slate-900', 'shadow-sm');
+      b.classList.add('text-slate-600');
+    });
+    btn.classList.add('bg-white', 'text-slate-900', 'shadow-sm');
+    btn.classList.remove('text-slate-600');
+    document.getElementById('score-val').innerText = score;
+    document.getElementById('tasks-stat').innerText = tStat;
+    document.getElementById('habits-stat').innerText = hStat;
+  }
+</script>
+</body>
+</html>
+```
+})();
 
-          <!-- رویداد ۲ -->
-          <div class="bg-white p-3.5 rounded-2xl border-r-4 border-r-emerald-500 border border-slate-100 flex items-center justify-between shadow-sm">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">
-                <span class="material-symbols-outlined">restaurant</span>
-              </div>
-              <div>
-                <h4 class="text-xs font-bold text-slate-800">صرف ناهار، چای نعناع و پیاده‌روی کوتاه</h4>
-                <p class="text-[10px] text-slate-400 mt-0.5">استراحت ذهنی دور از نمایشگرها</p>
-              </div>
-            </div>
-            <div class="text-left">
-              <span class="text-xs font-black text-emerald-600">۱۳:۰۰</span>
-              <p class="text-[9px] text-slate-400">۱۴:۰۰</p>
-            </div>
-          </div>
-
-          <!-- رویداد ۳ -->
-          <div class="bg-white p-3.5 rounded-2xl border-r-4 border-r-indigo-500 border border-slate-100 flex items-center justify-between shadow-sm">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs">
-                <span class="material-symbols-outlined">insights</span>
-              </div>
-              <div>
-                <h4 class="text-xs font-bold text-slate-800">بررسی شاخص‌های کلیدی عملکرد (KPIs)</h4>
-                <p class="text-[10px] text-slate-400 mt-0.5">داشبورد آنالیتیکس محصول و نرخ تعامل کاربران</p>
-              </div>
-            </div>
-            <div class="text-left">
-              <span class="text-xs font-black text-indigo-600">۱۵:۰۰</span>
-              <p class="text-[9px] text-slate-400">۱۵:۴۵</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- نقل‌قول الهام‌بخش انتهای صفحه -->
-      <div class="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-100 text-center flex items-center justify-center gap-2 text-emerald-800 text-[11px] font-medium">
-        <span class="material-symbols-outlined text-sm text-emerald-600">psychology</span>
-        «پیوستگی‌های کوچک روزانه، دستاوردهای بزرگ فردا را می‌سازند.»
-      </div>
-
-    </main>
-
-    <!-- نوار ناوبری ثابت پایین صفحه (Bottom Navigation Bar) -->
-    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-2 flex items-center justify-between z-40">
-      <!-- تب امروز (فعال) -->
-      <a href="index.html" class="flex flex-col items-center gap-1 text-[#253366]">
-        <span class="material-symbols-outlined text-2xl font-bold">wb_sunny</span>
-        <span class="text-[10px] font-extrabold">امروز</span>
-      </a>
-
-      <!-- تب تقویم -->
-      <a href="calendar.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
-        <span class="material-symbols-outlined text-2xl">calendar_month</span>
-        <span class="text-[10px] font-medium">تقویم</span>
-      </a>
-
-      <!-- دکمه افزودن سریع (شناور) -->
-      <button class="w-12 h-12 -mt-5 rounded-full bg-[#253366] text-white flex items-center justify-center shadow-lg shadow-indigo-900/30 active:scale-95 transition-transform">
-        <span class="material-symbols-outlined text-2xl">add</span>
-      </button>
-
-      <!-- تب عادات -->
-      <a href="habits.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
-        <span class="material-symbols-outlined text-2xl">task_alt</span>
-        <span class="text-[10px] font-medium">عادت‌ها</span>
-      </a>
-
-      <!-- تب آمار -->
-      <a href="analytics.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-600 transition">
-        <span class="material-symbols-outlined text-2xl">show_chart</span>
-        <span class="text-[10px] font-medium">آمار</span>
-      </a>
-    </nav>
-  </div>
+</div>
+<!-- STITCH_THREEJS_END:ANIMATION_14 -->
 </body>
 </html>
